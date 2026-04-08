@@ -12,6 +12,12 @@ const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const cache_manager_1 = require("@nestjs/cache-manager");
 const cache_manager_redis_yet_1 = require("cache-manager-redis-yet");
+const category_entity_1 = require("./categories/category.entity");
+const product_entity_1 = require("./products/product.entity");
+const categories_module_1 = require("./categories/categories.module");
+const products_module_1 = require("./products/products.module");
+const _1775655274575_CreateTables_1 = require("./migrations/1775655274575-CreateTables");
+const _1775655787462_AddIsActiveToProducts_1 = require("./migrations/1775655787462-AddIsActiveToProducts");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 let AppModule = class AppModule {
@@ -28,8 +34,10 @@ exports.AppModule = AppModule = __decorate([
                 username: process.env.POSTGRES_USER,
                 password: process.env.POSTGRES_PASSWORD,
                 database: process.env.POSTGRES_DB,
-                entities: [],
-                synchronize: true,
+                entities: [category_entity_1.Category, product_entity_1.Product],
+                synchronize: false,
+                migrationsRun: true,
+                migrations: [_1775655274575_CreateTables_1.CreateTables1775655274575, _1775655787462_AddIsActiveToProducts_1.AddIsActiveToProducts1775655787462],
             }),
             cache_manager_1.CacheModule.registerAsync({
                 isGlobal: true,
@@ -43,6 +51,8 @@ exports.AppModule = AppModule = __decorate([
                     ttl: 60 * 1000,
                 }),
             }),
+            categories_module_1.CategoriesModule,
+            products_module_1.ProductsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
