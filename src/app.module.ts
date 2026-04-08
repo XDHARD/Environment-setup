@@ -3,6 +3,12 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
+import { Category } from './categories/category.entity';
+import { Product } from './products/product.entity';
+import { CategoriesModule } from './categories/categories.module';
+import { ProductsModule } from './products/products.module';
+import { CreateTables1775655274575 } from './migrations/1775655274575-CreateTables';
+import { AddIsActiveToProducts1775655787462 } from './migrations/1775655787462-AddIsActiveToProducts';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -17,8 +23,10 @@ import { AppService } from './app.service';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [],
-      synchronize: true, 
+      entities: [Category, Product],      	// поки порожній, додамо пізніше
+      synchronize: false,	// ВИМКНЕНО! Тільки міграції
+      migrationsRun: true,   // автоматично запускати міграції при старті
+      migrations: [CreateTables1775655274575, AddIsActiveToProducts1775655787462],   	// додамо пізніше
     }),
 
     CacheModule.registerAsync({
@@ -33,6 +41,8 @@ import { AppService } from './app.service';
         ttl: 60 * 1000,
       }),
     }),
+  CategoriesModule,
+	ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
