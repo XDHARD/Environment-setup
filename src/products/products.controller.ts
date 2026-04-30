@@ -1,19 +1,17 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Patch,
-  Delete,
-  Param,
-  Body,
-  ParseIntPipe,
+  Controller, Get, Post, Patch, Delete,
+  Param, Body, ParseIntPipe, UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-<<<<<<< HEAD
-=======
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
->>>>>>> d599266 (use DTOs in controllers/services, add TrimPipe)
+import { JwtAuthGuard }
+  from '../common/guards/jwt-auth.guard';
+import { RolesGuard }
+  from '../common/guards/roles.guard';
+import { Roles }
+  from '../common/decorators/roles.decorator';
+import { Role } from '../common/enums/role.enum';
  
 @Controller('api/products')
 export class ProductsController {
@@ -21,6 +19,7 @@ export class ProductsController {
 	private readonly productsService: ProductsService,
   ) {}
  
+  // Публічні ендпоінти — без Guard
   @Get()
   findAll() {
 	return this.productsService.findAll();
@@ -31,45 +30,28 @@ export class ProductsController {
 	return this.productsService.findOne(id);
   }
  
+  // Захищені ендпоінти — тільки ADMIN
   @Post()
-<<<<<<< HEAD
-  create(
-	@Body()
-	body: {
-  	name: string;
-  	description?: string;
-  	price: number;
-  	stock?: number;
-  	categoryId?: number;
-	},
-  ) {
-	return this.productsService.create(body);
-=======
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   create(@Body() dto: CreateProductDto) {
 	return this.productsService.create(dto);
->>>>>>> d599266 (use DTOs in controllers/services, add TrimPipe)
   }
  
   @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   update(
 	@Param('id', ParseIntPipe) id: number,
-<<<<<<< HEAD
-	@Body() body: any,
-  ) {
-	return this.productsService.update(id, body);
-=======
 	@Body() dto: UpdateProductDto,
   ) {
 	return this.productsService.update(id, dto);
->>>>>>> d599266 (use DTOs in controllers/services, add TrimPipe)
   }
  
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   remove(@Param('id', ParseIntPipe) id: number) {
 	return this.productsService.remove(id);
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> d599266 (use DTOs in controllers/services, add TrimPipe)

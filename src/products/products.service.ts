@@ -2,11 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
-<<<<<<< HEAD
-=======
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
->>>>>>> d599266 (use DTOs in controllers/services, add TrimPipe)
  
 @Injectable()
 export class ProductsService {
@@ -34,22 +31,6 @@ export class ProductsService {
 	return product;
   }
  
-<<<<<<< HEAD
-  async create(data: {
-	name: string;
-	description?: string;
-	price: number;
-	stock?: number;
-	categoryId?: number;
-  }): Promise<Product> {
-	const product = this.productRepo.create({
-  	name: data.name,
-  	description: data.description,
-  	price: data.price,
-  	stock: data.stock ?? 0,
-  	category: data.categoryId ? { id: data.categoryId } : null,
-	} as Product);
-=======
   async create(dto: CreateProductDto): Promise<Product> {
 	const product = this.productRepo.create({
   	name: dto.name,
@@ -60,34 +41,11 @@ export class ProductsService {
     	? { id: dto.categoryId } as any
     	: undefined,
 	});
->>>>>>> d599266 (use DTOs in controllers/services, add TrimPipe)
 	return this.productRepo.save(product);
   }
  
   async update(
 	id: number,
-<<<<<<< HEAD
-	data: Partial<{
-  	name: string;
-  	description: string;
-  	price: number;
-  	stock: number;
-  	isActive: boolean;
-  	categoryId: number;
-	}>,
-  ): Promise<Product> {
-	const product = await this.findOne(id);
-	if (data.name !== undefined) product.name = data.name;
-	if (data.description !== undefined)
-  	product.description = data.description;
-	if (data.price !== undefined) product.price = data.price;
-	if (data.stock !== undefined) product.stock = data.stock;
-	if (data.isActive !== undefined)
-  	product.isActive = data.isActive;
-	if (data.categoryId !== undefined) {
-  	product.category = { id: data.categoryId } as any;
-	}
-=======
 	dto: UpdateProductDto,
   ): Promise<Product> {
 	const product = await this.findOne(id);
@@ -101,7 +59,6 @@ export class ProductsService {
   	product.category = { id: dto.categoryId } as any;
 	}
  
->>>>>>> d599266 (use DTOs in controllers/services, add TrimPipe)
 	return this.productRepo.save(product);
   }
  
@@ -109,8 +66,4 @@ export class ProductsService {
 	const product = await this.findOne(id);
 	await this.productRepo.remove(product);
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> d599266 (use DTOs in controllers/services, add TrimPipe)

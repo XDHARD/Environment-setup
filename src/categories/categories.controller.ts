@@ -1,19 +1,17 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Patch,
-  Delete,
-  Param,
-  Body,
-  ParseIntPipe,
+  Controller, Get, Post, Patch, Delete,
+  Param, Body, ParseIntPipe, UseGuards,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-<<<<<<< HEAD
-=======
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
->>>>>>> d599266 (use DTOs in controllers/services, add TrimPipe)
+import { JwtAuthGuard }
+  from '../common/guards/jwt-auth.guard';
+import { RolesGuard }
+  from '../common/guards/roles.guard';
+import { Roles }
+  from '../common/decorators/roles.decorator';
+import { Role } from '../common/enums/role.enum';
  
 @Controller('api/categories')
 export class CategoriesController {
@@ -32,35 +30,26 @@ export class CategoriesController {
   }
  
   @Post()
-<<<<<<< HEAD
-  create(@Body() body: { name: string; description?: string }) {
-	return this.categoriesService.create(body);
-=======
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   create(@Body() dto: CreateCategoryDto) {
 	return this.categoriesService.create(dto);
->>>>>>> d599266 (use DTOs in controllers/services, add TrimPipe)
   }
- 
+
   @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   update(
 	@Param('id', ParseIntPipe) id: number,
-<<<<<<< HEAD
-	@Body() body: Partial<{ name: string; description: string }>,
-  ) {
-	return this.categoriesService.update(id, body);
-=======
 	@Body() dto: UpdateCategoryDto,
   ) {
 	return this.categoriesService.update(id, dto);
->>>>>>> d599266 (use DTOs in controllers/services, add TrimPipe)
   }
  
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   remove(@Param('id', ParseIntPipe) id: number) {
 	return this.categoriesService.remove(id);
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> d599266 (use DTOs in controllers/services, add TrimPipe)
