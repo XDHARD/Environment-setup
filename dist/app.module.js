@@ -20,6 +20,10 @@ const _1775655274575_CreateTables_1 = require("./migrations/1775655274575-Create
 const _1775655787462_AddIsActiveToProducts_1 = require("./migrations/1775655787462-AddIsActiveToProducts");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const user_entity_1 = require("./users/user.entity");
+const users_module_1 = require("./users/users.module");
+const _1777566032183_CreateUsers_1 = require("./migrations/1777566032183-CreateUsers");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -34,10 +38,10 @@ exports.AppModule = AppModule = __decorate([
                 username: process.env.POSTGRES_USER,
                 password: process.env.POSTGRES_PASSWORD,
                 database: process.env.POSTGRES_DB,
-                entities: [category_entity_1.Category, product_entity_1.Product],
+                entities: [category_entity_1.Category, product_entity_1.Product, user_entity_1.User],
                 synchronize: false,
                 migrationsRun: true,
-                migrations: [_1775655274575_CreateTables_1.CreateTables1775655274575, _1775655787462_AddIsActiveToProducts_1.AddIsActiveToProducts1775655787462],
+                migrations: [_1775655274575_CreateTables_1.CreateTables1775655274575, _1775655787462_AddIsActiveToProducts_1.AddIsActiveToProducts1775655787462, _1777566032183_CreateUsers_1.CreateUsers1777566032183],
             }),
             cache_manager_1.CacheModule.registerAsync({
                 isGlobal: true,
@@ -51,6 +55,8 @@ exports.AppModule = AppModule = __decorate([
                     ttl: 60 * 1000,
                 }),
             }),
+            users_module_1.UsersModule,
+            auth_module_1.AuthModule,
             categories_module_1.CategoriesModule,
             products_module_1.ProductsModule,
         ],
