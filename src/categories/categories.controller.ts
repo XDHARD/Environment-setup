@@ -5,14 +5,16 @@ import {
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { JwtAuthGuard }
-  from '../common/guards/jwt-auth.guard';
-import { RolesGuard }
-  from '../common/guards/roles.guard';
-import { Roles }
-  from '../common/decorators/roles.decorator';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 import { Role } from '../common/enums/role.enum';
- 
+import {
+  ApiTags, ApiOperation, ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+
+@ApiTags('Categories')
 @Controller('api/categories')
 export class CategoriesController {
   constructor(
@@ -20,16 +22,27 @@ export class CategoriesController {
   ) {}
  
   @Get()
+  @ApiOperation({ summary: 'Отримати всі категорії' })
+  @ApiResponse({ status: 200, description: 'Список категорій' })
   findAll() {
 	return this.categoriesService.findAll();
   }
  
   @Get(':id')
+  @ApiOperation({ summary: 'Отримати категорію за ID' })
+  @ApiResponse({ status: 200, description: 'Категорія знайдена' })
+  @ApiResponse({ status: 404, description: 'Категорія не знайдена' })
   findOne(@Param('id', ParseIntPipe) id: number) {
 	return this.categoriesService.findOne(id);
   }
  
   @Post()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Створити категорію (admin)' })
+  @ApiResponse({ status: 201, description: 'Категорія створена' })
+  @ApiResponse({ status: 400, description: 'Помилка валідації' })
+  @ApiResponse({ status: 401, description: 'Не авторизовано' })
+  @ApiResponse({ status: 403, description: 'Недостатньо прав' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   create(@Body() dto: CreateCategoryDto) {
@@ -37,6 +50,10 @@ export class CategoriesController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Оновити категорію (admin)' })
+  @ApiResponse({ status: 200, description: 'Категорія оновлена' })
+  @ApiResponse({ status: 404, description: 'Категорія не знайдена' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   update(
@@ -47,6 +64,9 @@ export class CategoriesController {
   }
  
   @Delete(':id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Видалити категорію (admin)' })
+  @ApiResponse({ status: 200, description: 'Категорія видалена' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   remove(@Param('id', ParseIntPipe) id: number) {
